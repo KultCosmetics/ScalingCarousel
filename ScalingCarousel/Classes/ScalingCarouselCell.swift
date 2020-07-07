@@ -74,16 +74,19 @@ open class ScalingCarouselCell: UICollectionViewCell {
         let scaleCalculator = abs(width - abs(originXActual))
         let percentageScale = (scaleCalculator/width)
         
-        let scaleValue = scaleMinimum
-            + (percentageScale/scaleDivisor)
-        
         let alphaValue = alphaMinimum
             + (percentageScale/scaleDivisor)
+
+        var identity = CATransform3DIdentity
+        identity.m34 = 1.0/750 * (1 - percentageScale)
+        let multiplier: CGFloat = originXActual < 0 ? -1.0 : 1.0
+        let transform = CATransform3DRotate(identity, .pi/4 * (1 - percentageScale) * multiplier, 0, 1, 0)
+        if #available(iOS 12.0, *) {
+            mainView.transform3D = transform
+        } else {
+            // Fallback on earlier versions
+        }
         
-        let affineIdentity = CGAffineTransform.identity
-        
-        // Scale our mainView and set it's alpha value
-        mainView.transform = affineIdentity.scaledBy(x: scaleValue, y: scaleValue)
         mainView.alpha = alphaValue
         
         // ..also..round the corners
