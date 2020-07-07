@@ -78,9 +78,11 @@ open class ScalingCarouselCell: UICollectionViewCell {
             + (percentageScale/scaleDivisor)
 
         var identity = CATransform3DIdentity
-        identity.m34 = 1.0/750 * (1 - percentageScale)
+        // determine eye position to get 3d perspective. Higher eyePosition values flattens the perspective
+        let eyePosition: CGFloat = 400
+        identity.m34 = 1.0/eyePosition * (1 - percentageScale)
         let multiplier: CGFloat = originXActual < 0 ? -1.0 : 1.0
-        let transform = CATransform3DRotate(identity, .pi/4 * (1 - percentageScale) * multiplier, 0, 1, 0)
+        let transform = CATransform3DRotate(identity, 0.349066 * (1 - percentageScale) * multiplier, 0, 1, 0)
         if #available(iOS 12.0, *) {
             mainView.transform3D = transform
         } else {
